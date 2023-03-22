@@ -9,3 +9,6 @@ __pycache__/
 
 #.env will store secrets, keys,etc
 .env
+
+#ignore the SQLite database (for development/testing use only)
+app.db
