@@ -6,3 +6,6 @@ __pycache__/
 
 #also .vscode as well
 .vscode
+
+#.env will store secrets, keys,etc
+.env
