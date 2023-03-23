@@ -1,12 +1,13 @@
 from app import app, db
 from flask import render_template, redirect, url_for, flash
-from fake_data import posts
+# from fake_data import posts
 from app.forms import SignUpForm, LoginForm, PostForm
 from app.models import User, Post
 from flask_login import login_user, logout_user, login_required, current_user
 
 @app.route('/')
 def index():
+    posts = Post.query.all()
     return render_template('index.html', posts=posts)
 
 
@@ -76,7 +77,7 @@ def create_post():
         body = form.body.data
         image_url = form.image_url.data or None
         # Create an instance of Post with form data AND auth user ID
-        new_post=Post(title=title, body=body,image_url=image_url, user_id=current_user.id)
-        flash(f"{new_post.title} has been created.", "success")
+        new_post = Post(title=title, body=body, image_url=image_url, user_id=current_user.id)
+        flash(f"{new_post.title} has been created!", "success")
         return redirect(url_for('index'))
     return render_template('create.html', form=form)

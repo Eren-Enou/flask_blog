@@ -1,8 +1,8 @@
+from random import randint
 from app import db, login
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
-from random import randint
 
 
 class User(db.Model, UserMixin):
@@ -13,7 +13,7 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(75), nullable=False, unique=True)
     password = db.Column(db.String(255), nullable=False)
     date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    posts = db.relationship("Post", backref="author")
+    posts = db.relationship('Post', backref='author')
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -41,7 +41,7 @@ class Post(db.Model):
     body = db.Column(db.String, nullable=False)
     image_url = db.Column(db.String(100), nullable=False, default=random_photo_url)
     date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id')) # SQL - FOREIGN KEY(user_id) REFERENCES user(id)
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
