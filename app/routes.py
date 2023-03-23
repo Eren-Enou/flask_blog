@@ -2,8 +2,8 @@ from app import app, db
 from flask import render_template, redirect, url_for, flash
 from fake_data import posts
 from app.forms import SignUpForm, LoginForm, PostForm
-from app.models import User
-from flask_login import login_user,logout_user
+from app.models import User, Post
+from flask_login import login_user, logout_user, login_required, current_user
 
 @app.route('/')
 def index():
@@ -48,6 +48,7 @@ def login():
         # Check if there is a user with username and that password
         user = User.query.filter_by(username=username).first()
         if user is not None and user.check_password(password):
+            # If the user exists and has the correct password, log them in
             login_user(user)
             flash(f'You have successfully logged in as {username}', 'success')
             return redirect(url_for('index'))
@@ -57,13 +58,25 @@ def login():
 
     return render_template('login.html', form=form)
 
+
 @app.route('/logout')
 def logout():
     logout_user()
     flash("You have logged out", "info")
     return redirect(url_for('index'))
 
-@app.route('/create')
+
+@app.route('/create', methods=["GET", "POST"])
+@login_required
 def create_post():
     form = PostForm()
+    if form.validate_on_submit():
+        # Get the data from the form
+        title = form.title.data
+        body = form.body.data
+        image_url = form.image_url.data or None
+        # Create an instance of Post with form data AND auth user ID
+        new_post=Post(title=title, body=body,image_url=image_url, user_id=current_user.id)
+        flash(f"{new_post.title} has been created.", "success")
+        return redirect(url_for('index'))
     return render_template('create.html', form=form)
